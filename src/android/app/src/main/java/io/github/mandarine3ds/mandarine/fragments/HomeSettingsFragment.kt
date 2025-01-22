@@ -137,6 +137,12 @@ class HomeSettingsFragment : Fragment() {
                 { mainActivity.ciaFileInstaller.launch(true) }
             ),
             HomeSetting(
+                R.string.multiplayer,
+                R.string.multiplayer_description,
+                R.drawable.ic_multiplayer,
+                { mainActivity.displayMultiplayerDialog() }
+            ),
+            HomeSetting(
                 R.string.share_log,
                 R.string.share_log_description,
                 R.drawable.ic_share,
