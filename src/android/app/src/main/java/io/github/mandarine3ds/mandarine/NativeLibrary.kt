@@ -21,7 +21,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.github.mandarine3ds.mandarine.activities.EmulationActivity
-import io.github.mandarine3ds.mandarine.utils.EmulationMenuSettings
 import io.github.mandarine3ds.mandarine.utils.FileUtil
 import io.github.mandarine3ds.mandarine.utils.Log
 import io.github.mandarine3ds.mandarine.utils.NetPlayManager
@@ -780,6 +779,9 @@ object NativeLibrary {
         const val BUTTON_DEBUG = 781
         const val BUTTON_GPIO14 = 782
         const val BUTTON_SWAP_SCREENS = 783
+        const val BUTTON_COMBO_BUTTON_1 = 784
+        const val BUTTON_COMBO_BUTTON_2 = 785
+        const val BUTTON_COMBO_BUTTON_3 = 786
     }
 
     /**

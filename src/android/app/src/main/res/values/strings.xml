@@ -95,6 +95,13 @@
     <string name="cannot_skip">You can\'t skip setting the user folder</string>
     <string name="cannot_skip_directory_description">This step is required to allow Mandarine to work. Please select a directory and then you can continue.</string>
     <string name="cannot_skip_directory_help">https://github.com/citra-emu/citra/wiki/Citra-Android-user-data-and-storage</string>
+    <string name="input_overlay">Input Overlay</string>
+    <string name="input_overlay_description">Configure input overlay button visibility</string>
+    <string name="button_visibility">Button Visibility</string>
+    <string name="button_combo_key_1">Combo Key 1</string>
+    <string name="button_combo_key_2">Combo Key 1</string>
+    <string name="button_combo_key_3">Combo Key 1</string>
+
 
     <!-- GameFragment Strings -->
     <string name="search_and_filter_games">Search and Filter Games</string>
@@ -901,4 +908,14 @@
     <string name="multiplayer_unban_message">Are you sure you want to unban %1$s?</string>
     <string name="multiplayer_ban">Ban User</string>
     <string name="_0">0%</string>
+    <string name="button_dpad_up">Dpad Up</string>
+    <string name="button_dpad_down">Dpad Down</string>
+    <string name="button_dpad_left">Dpad left</string>
+    <string name="button_dpad_right">Dpad right</string>
+    <string name="combo_key_header_1">Combo Key 1</string>
+    <string name="combo_button_1">Combo Button 1</string>
+    <string name="combo_button_2">Combo Button 2</string>
+    <string name="combo_button_3">Combo Button 3</string>
+    <string name="combo_buttons">Combo Buttons</string>
+    <string name="combo_buttons_description">Allows you to setup a single combo key which will perofrm multile buttons actions at once</string>
 </resources>

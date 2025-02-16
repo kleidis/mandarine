@@ -107,6 +107,9 @@
         <item>@string/controller_c</item>
         <item>@string/button_home</item>
         <item>@string/button_swap_screens</item>
+        <item>@string/button_combo_key_1</item>
+        <item>@string/button_combo_key_2</item>
+        <item>@string/button_combo_key_3</item>
     </string-array>
 
     <string-array name="cameraImageSourceNames">
@@ -575,5 +578,4 @@
         <item>1</item>
         <item>9</item>
     </integer-array>
-
 </resources>

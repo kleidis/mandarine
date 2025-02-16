@@ -98,7 +98,10 @@ class SettingsFragmentPresenter(private val fragmentView: SettingsFragmentView) 
             Settings.SECTION_DEBUG -> addDebugSettings(sl)
             Settings.SECTION_THEME -> addThemeSettings(sl)
             Settings.SECTION_CUSTOM_LANDSCAPE -> addCustomLandscapeSettings(sl)
-            Settings.SECTION_CUSTOM_PORTRAIT -> addCustomPortraitSettings(sl)
+            Settings.SECTION_COMBO_BUTTONS -> addComboButtonsSelectionSettings(sl)
+            Settings.SECTION_COMBO_BUTTON_1 -> addComboButtonSettings(sl, "combo_button_1", R.string.combo_button_1)
+            Settings.SECTION_COMBO_BUTTON_2 -> addComboButtonSettings(sl, "combo_button_2", R.string.combo_button_2)
+            Settings.SECTION_COMBO_BUTTON_3 -> addComboButtonSettings(sl, "combo_button_3", R.string.combo_button_3)
             else -> {
                 fragmentView.showToastMessage("Unimplemented menu", false)
                 return
@@ -688,6 +691,15 @@ class SettingsFragmentPresenter(private val fragmentView: SettingsFragmentView) 
     private fun addControlsSettings(sl: ArrayList<SettingsItem>) {
         settingsActivity.setToolbarTitle(settingsActivity.getString(R.string.preferences_controls))
         sl.apply {
+            add(
+                SubmenuSetting(
+                    R.string.combo_buttons,
+                    R.string.combo_buttons_description,
+                    R.drawable.ic_controller,
+                    Settings.SECTION_COMBO_BUTTONS
+                )
+            )
+
             add(HeaderSetting(R.string.generic_buttons))
             Settings.buttonKeys.forEachIndexed { i: Int, key: String ->
                 val button = getInputObject(key)
@@ -1054,6 +1066,54 @@ class SettingsFragmentPresenter(private val fragmentView: SettingsFragmentView) 
         }
     }
 
+    private fun addComboButtonSettings(sl: ArrayList<SettingsItem>, combokey: String, headerResId: Int) {
+        sl.apply {
+            add(HeaderSetting(headerResId))
+
+            val buttons = mapOf(
+                "button_a" to R.string.button_a,
+                "button_b" to R.string.button_b,
+                "button_x" to R.string.button_x,
+                "button_y" to R.string.button_y,
+                "trigger_l" to R.string.button_l,
+                "trigger_r" to R.string.button_r,
+                "button_zl" to R.string.button_zl,
+                "button_zr" to R.string.button_zr,
+                "button_start" to R.string.button_start,
+                "button_select" to R.string.button_select,
+                "dpad_up" to R.string.button_dpad_up,
+                "dpad_down" to R.string.button_dpad_down,
+                "dpad_left" to R.string.button_dpad_left,
+                "dpad_right" to R.string.button_dpad_right
+            )
+
+            buttons.forEach { (key, stringId) ->
+                val setting = object : AbstractBooleanSetting {
+                    override var boolean: Boolean
+                        get() = preferences.getBoolean("${combokey}_$key", false)
+                        set(value) {
+                            preferences.edit()
+                                .putBoolean("${combokey}_$key", value)
+                                .apply()
+                        }
+                    override val key: String? = null
+                    override val section: String? = null
+                    override val isRuntimeEditable = true
+                    override val valueAsString get() = boolean.toString()
+                    override val defaultValue = false
+                }
+
+                add(
+                    SwitchSetting(
+                        setting,
+                        stringId,
+                        0
+                    )
+                )
+            }
+        }
+    }
+
     private fun addCustomLandscapeSettings(sl: ArrayList<SettingsItem>) {
         settingsActivity.setToolbarTitle(settingsActivity.getString(R.string.emulation_landscape_custom_layout))
         sl.apply {
@@ -1154,6 +1214,36 @@ class SettingsFragmentPresenter(private val fragmentView: SettingsFragmentView) 
                     IntSetting.LANDSCAPE_BOTTOM_HEIGHT.key,
                     IntSetting.LANDSCAPE_BOTTOM_HEIGHT.defaultValue.toFloat()
                 )
+            )
+        }
+    }
+
+    private fun addComboButtonsSelectionSettings(sl: ArrayList<SettingsItem>) {
+        settingsActivity.setToolbarTitle(settingsActivity.getString(R.string.combo_buttons))
+        sl.apply {
+            add(
+                SubmenuSetting(
+                R.string.combo_button_1,
+                0,
+                R.drawable.ic_cartridge,
+                Settings.SECTION_COMBO_BUTTON_1
+            )
+            )
+            add(
+                SubmenuSetting(
+                R.string.combo_button_2,
+                0,
+                R.drawable.ic_cartridge,
+                Settings.SECTION_COMBO_BUTTON_2
+            )
+            )
+            add(
+                SubmenuSetting(
+                R.string.combo_button_3,
+                0,
+                R.drawable.ic_cartridge,
+                Settings.SECTION_COMBO_BUTTON_3
+            )
             )
         }
     }

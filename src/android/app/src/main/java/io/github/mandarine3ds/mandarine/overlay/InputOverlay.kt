@@ -81,7 +81,42 @@ class InputOverlay(context: Context?, attrs: AttributeSet?) : SurfaceView(contex
             performHapticFeedback(type)
     }
 
-    private fun swapScreens() {
+    private fun pressEnabledButtons(status: Int, comboKeyBoolean: String) {
+        val buttonState = if (status == NativeLibrary.ButtonState.RELEASED) {
+            NativeLibrary.ButtonState.RELEASED
+        } else {
+            NativeLibrary.ButtonState.PRESSED
+        }
+
+        val buttonKeysToValues = mapOf(
+            "button_a" to NativeLibrary.ButtonType.BUTTON_A,
+            "button_b" to NativeLibrary.ButtonType.BUTTON_B,
+            "button_x" to NativeLibrary.ButtonType.BUTTON_X,
+            "button_y" to NativeLibrary.ButtonType.BUTTON_Y,
+            "trigger_l" to NativeLibrary.ButtonType.TRIGGER_L,
+            "trigger_r" to NativeLibrary.ButtonType.TRIGGER_R,
+            "button_zl" to NativeLibrary.ButtonType.BUTTON_ZL,
+            "button_zr" to NativeLibrary.ButtonType.BUTTON_ZR,
+            "button_start" to NativeLibrary.ButtonType.BUTTON_START,
+            "button_select" to NativeLibrary.ButtonType.BUTTON_SELECT,
+            "dpad_up" to NativeLibrary.ButtonType.DPAD_UP,
+            "dpad_down" to NativeLibrary.ButtonType.DPAD_DOWN,
+            "dpad_left" to NativeLibrary.ButtonType.DPAD_LEFT,
+            "dpad_right" to NativeLibrary.ButtonType.DPAD_RIGHT,
+        )
+
+        buttonKeysToValues.forEach { (key, value) ->
+            if (preferences.getBoolean("${comboKeyBoolean}_$key", false)) {
+                try {
+                    NativeLibrary.onGamePadEvent(NativeLibrary.TouchScreenDevice, value, buttonState)
+                } catch (e: NullPointerException) {
+                    return
+                }
+            }
+        }
+    }
+
+        private fun swapScreens() {
         val isSwapScreensEnabled = !EmulationMenuSettings.swapScreens
         EmulationMenuSettings.swapScreens = isSwapScreensEnabled
         NativeLibrary.swapScreens(
@@ -98,6 +133,20 @@ class InputOverlay(context: Context?, attrs: AttributeSet?) : SurfaceView(contex
         for (button in overlayButtons) {
             if (!button.updateStatus(event, this)) {
                 continue
+            }
+
+            when (button.id) {
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_1 -> {
+                    pressEnabledButtons(button.status, "combo_button_1")
+                }
+
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_2 -> {
+                    pressEnabledButtons(button.status, "combo_button_2")
+                }
+
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_3 -> {
+                    pressEnabledButtons(button.status, "combo_button_3")
+                }
             }
 
             if (button.id == NativeLibrary.ButtonType.BUTTON_SWAP_SCREENS && button.status == NativeLibrary.ButtonState.PRESSED) {
@@ -467,6 +516,42 @@ class InputOverlay(context: Context?, attrs: AttributeSet?) : SurfaceView(contex
                 )
             )
         }
+
+        if (preferences.getBoolean("buttonToggle15", false)) {
+            overlayButtons.add(
+                initializeOverlayButton(
+                    context,
+                    R.drawable.combo_key_1,
+                    R.drawable.combo_key_1_pressed,
+                    NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_1,
+                    orientation
+                )
+            )
+        }
+
+        if (preferences.getBoolean("buttonToggle16", false)) {
+            overlayButtons.add(
+                initializeOverlayButton(
+                    context,
+                    R.drawable.combo_key_2,
+                    R.drawable.combo_key_2_pressed,
+                    NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_2,
+                    orientation
+                )
+            )
+        }
+
+        if (preferences.getBoolean("buttonToggle17", false)) {
+            overlayButtons.add(
+                initializeOverlayButton(
+                    context,
+                    R.drawable.combo_key_3,
+                    R.drawable.combo_key_3_pressed,
+                    NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_3,
+                    orientation
+                )
+            )
+        }
     }
 
     fun refreshControls() {
@@ -672,6 +757,22 @@ class InputOverlay(context: Context?, attrs: AttributeSet?) : SurfaceView(contex
                 NativeLibrary.ButtonType.BUTTON_SWAP_SCREENS.toString() + "-Y",
                 resources.getInteger(R.integer.N3DS_BUTTON_SWAP_SCREENS_Y).toFloat() / 1000 * maxY
             )
+            .putFloat(
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_1.toString() + "-X",
+                resources.getInteger(R.integer.N3DS_BUTTON_COMBO_KEY_1_X).toFloat() / 1000 * maxX
+            )
+            .putFloat(
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_1.toString() + "-Y",
+                resources.getInteger(R.integer.N3DS_BUTTON_COMBO_KEY_1_Y).toFloat() / 1000 * maxY
+            )
+            .putFloat(
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_2.toString() + "-X",
+                resources.getInteger(R.integer.N3DS_BUTTON_COMBO_KEY_2_X).toFloat() / 1000 * maxX
+            )
+            .putFloat(
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_2.toString() + "-Y",
+                resources.getInteger(R.integer.N3DS_BUTTON_COMBO_KEY_2_Y).toFloat() / 1000 * maxY
+            )
             .apply()
     }
 
@@ -815,6 +916,22 @@ class InputOverlay(context: Context?, attrs: AttributeSet?) : SurfaceView(contex
                 NativeLibrary.ButtonType.BUTTON_SWAP_SCREENS.toString() + portrait + "-Y",
                 resources.getInteger(R.integer.N3DS_BUTTON_SWAP_SCREENS_PORTRAIT_Y).toFloat() / 1000 * maxY
             )
+            .putFloat(
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_1.toString() + portrait + "-X",
+                resources.getInteger(R.integer.N3DS_BUTTON_COMBO_KEY_PORTRAIT_1_X).toFloat() / 1000 * maxX
+            )
+            .putFloat(
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_1.toString() + portrait + "-Y",
+                resources.getInteger(R.integer.N3DS_BUTTON_COMBO_KEY_PORTRAIT_1_Y).toFloat() / 1000 * maxY
+            )
+            .putFloat(
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_2.toString() + portrait + "-X",
+                resources.getInteger(R.integer.N3DS_BUTTON_COMBO_KEY_PORTRAIT_2_X).toFloat() / 1000 * maxX
+            )
+            .putFloat(
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_2.toString() + portrait + "-Y",
+                resources.getInteger(R.integer.N3DS_BUTTON_COMBO_KEY_PORTRAIT_2_Y).toFloat() / 1000 * maxY
+            )
             .apply()
     }
 
@@ -927,6 +1044,9 @@ class InputOverlay(context: Context?, attrs: AttributeSet?) : SurfaceView(contex
                 NativeLibrary.ButtonType.BUTTON_START,
                 NativeLibrary.ButtonType.BUTTON_SELECT,
                 NativeLibrary.ButtonType.BUTTON_SWAP_SCREENS -> 0.08f
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_1 -> 0.15f
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_2 -> 0.15f
+                NativeLibrary.ButtonType.BUTTON_COMBO_BUTTON_3 -> 0.15f
 
                 NativeLibrary.ButtonType.TRIGGER_L,
                 NativeLibrary.ButtonType.TRIGGER_R,
